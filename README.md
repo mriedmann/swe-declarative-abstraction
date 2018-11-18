@@ -10,7 +10,7 @@ Transaction name | 40 | SecurityAccountOverview | blank | left
 Security Account Number | 10 | 12345678 | 0 | right
 Risk category | 2 | 00 | none | left
 Depot Owner Lastname | 30 | MUSTERMANN | blank | right
-Depot Owner Firstname | 30 | MUSTERMANN | blank | right
+Depot Owner Firstname | 30 | MAX UND MARIA | blank | right
 Currency | 3 | EUR | blank | left
 Balance | 17 | 1692.45 | blank | right
 
