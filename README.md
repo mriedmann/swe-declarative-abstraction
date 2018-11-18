@@ -1,8 +1,8 @@
 # swe-declarative-abstraction
 
-##SecurityAccountOverview
+## SecurityAccountOverview
 
-###Structure
+### Structure
 
 fieldname | length | example | padding char | alignment
 --------- | ------ | ------- | ------------ | ---------
@@ -14,9 +14,9 @@ Depot Owner Firstname | 30 | MUSTERMANN | blank | right
 Currency | 3 | EUR | blank | left
 Balance | 17 | 1692.45 | blank | right
 
-##SecurityConfiguration
+## SecurityConfiguration
 
-###Structure
+### Structure
 
 fieldname | length | example | padding char | alignment
 --------- | ------ | ------- | ------------ | ---------
@@ -28,7 +28,7 @@ Currency | 3 | EUR | blank | left
 52 Weeks Highest | 10 | 54.98 | blank | right
 52 Weeks Lowest | 10 | 29.60 | blank | right
 
-##Risk Category
+## Risk Category
 
 Category | Value
 -------- | -----
