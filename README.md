@@ -1,4 +1,4 @@
-# swe-declarative-abstraction
+# SWE Exercice 1 - Abstraction and declarative programming 
 
 Your are a programmer. A junior programmer in a new team of a bank. As the new guy the lead developer of the team, your boss, gives you the same task as he did for the other junior devs in your team. You have to implement a connector to a third-party solution which is managing securities/stocks for the bank.
 
