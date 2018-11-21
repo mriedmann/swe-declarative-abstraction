@@ -37,73 +37,40 @@ public class SecurityAccountOverviewConnectorImpl implements
 
     @Override
     public SecurityAccountOverview read(Path file) {
-        String content = readFileContent(file);
-        return mapOverview(content);
-    }
-
-    private SecurityAccountOverview mapOverview(String content) {
-        SecurityAccountOverview overview = new SecurityAccountOverview();
-        overview.setAccountNumber(getAccountNumber(content));
-        overview.setRiskCategory(getRiskCategory(content));
-        overview.setDepotOwner(getDepotOwner(content));
-        overview.setBalance(getBalance(content));
-        return overview;
-    }
-
-    private String readFileContent(Path file) {
         String content;
         try (BufferedReader reader = Files.newBufferedReader(file)) {
             content = reader.readLine();
         } catch (IOException e) {
             throw new SecurityAccountOverviewReadException(e);
         }
-        return content;
+        return mapOverview(content);
     }
 
-    private Amount getBalance(String content) {
-        String currency = getCurrency(content);
-        BigDecimal balanceValue = getBalanceValue(content);
-        return new Amount(currency, balanceValue);
+    private SecurityAccountOverview mapOverview(String content) {
+        SecurityAccountOverview overview = new SecurityAccountOverview();
+        overview.setAccountNumber(stripStart(
+                extract(content, ACCOUNTNUMBER_START_INDEX, ACCOUNTNUMBER_LENGTH),
+                ACCOUNTNUMBER_PADDING_CHAR));
+        overview.setRiskCategory(RiskCategory.fromCode(
+                extract(content, RISKCATEGORY_START_INDEX, RISKCATEGORY_LENGTH).trim())
+                .orElseThrow(IllegalStateException::new));
+        overview.setDepotOwner(getDepotOwner(content));
+        String currency = extract(content, CURRENCY_START_INDEX, CURRENCY_LENGTH).trim();
+        BigDecimal balanceValue = BigDecimal.valueOf(
+                Double.valueOf(extract(content, BALANCE_START_INDEX, BALANCE_LENGTH)));
+        overview.setBalance(new Amount(currency, balanceValue));
+        return overview;
     }
 
     private DepotOwner getDepotOwner(String content) {
         DepotOwner owner = new DepotOwner();
-        owner.setLastname(getLastName(content));
-        owner.setFirstname(getFirstname(content));
+        owner.setLastname(extract(content, LASTNAME_START_INDEX, LASTNAME_LENGTH).trim());
+        owner.setFirstname(extract(content, FIRSTNAME_START_INDEX, FIRSTNAME_LENGTH).trim());
         return owner;
-    }
-
-    private BigDecimal getBalanceValue(String content) {
-        return BigDecimal.valueOf(
-                Double.valueOf(extract(content, BALANCE_START_INDEX, BALANCE_LENGTH)));
-    }
-
-    private String getCurrency(String content) {
-        return extract(content, CURRENCY_START_INDEX, CURRENCY_LENGTH).trim();
-    }
-
-    private String getFirstname(String content) {
-        return extract(content, FIRSTNAME_START_INDEX, FIRSTNAME_LENGTH).trim();
-    }
-
-    private String getLastName(String content) {
-        return extract(content, LASTNAME_START_INDEX, LASTNAME_LENGTH).trim();
-    }
-
-    private String getAccountNumber(String content) {
-        return stripStart(
-                extract(content, ACCOUNTNUMBER_START_INDEX, ACCOUNTNUMBER_LENGTH),
-                ACCOUNTNUMBER_PADDING_CHAR);
     }
 
     private String extract(String content, int startIndex, int length) {
         return content.substring(startIndex, startIndex + length);
-    }
-
-    private RiskCategory getRiskCategory(String content) {
-        return RiskCategory.fromCode(
-                extract(content, RISKCATEGORY_START_INDEX, RISKCATEGORY_LENGTH).trim())
-                .orElseThrow(IllegalStateException::new);
     }
 
 }
