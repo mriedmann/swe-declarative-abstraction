@@ -1,4 +1,4 @@
-# SWE Exercice 1 - Abstraction and declarative programming 
+# SWE Exercice - Abstraction and declarative programming 
 
 You are a programmer in a software development team of business application for an Austrian retail bank. As a first task the team’s lead developer wants you to extend a connector to a third-party solution, which is managing securities/stocks of the bank.
 
