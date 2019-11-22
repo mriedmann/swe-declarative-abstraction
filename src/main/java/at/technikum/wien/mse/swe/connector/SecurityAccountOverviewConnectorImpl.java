@@ -1,19 +1,12 @@
 package at.technikum.wien.mse.swe.connector;
 
-import static org.apache.commons.lang.StringUtils.stripStart;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.nio.file.Files;
-import java.nio.file.Path;
-
 import at.technikum.wien.mse.swe.SecurityAccountOverviewConnector;
-import at.technikum.wien.mse.swe.exception.SecurityAccountOverviewReadException;
-import at.technikum.wien.mse.swe.model.Amount;
-import at.technikum.wien.mse.swe.model.DepotOwner;
-import at.technikum.wien.mse.swe.model.RiskCategory;
+import at.technikum.wien.mse.swe.filemapper.FieldType;
+import at.technikum.wien.mse.swe.filemapper.FileMapper;
+import at.technikum.wien.mse.swe.filemapper.FixedWidthFileMapperBuilder;
 import at.technikum.wien.mse.swe.model.SecurityAccountOverview;
+
+import java.nio.file.Path;
 
 /**
  * @author MatthiasKreuzriegler
@@ -35,42 +28,44 @@ public class SecurityAccountOverviewConnectorImpl implements
     private static final int BALANCE_START_INDEX = 115;
     private static final int BALANCE_LENGTH = 17;
 
+    private static final int ACCOUNTNUMBER = 0;
+    private static final int RISKCATEGORY = 1;
+    private static final int LASTNAME = 2;
+    private static final int FIRSTNAME = 3;
+    private static final int DEPOTOWNER = 4;
+    private static final int CURRENCY = 5;
+    private static final int BALANCE_VALUE = 6;
+    private static final int BALANCE = 7;
+
     @Override
     public SecurityAccountOverview read(Path file) {
-        String content;
-        try (BufferedReader reader = Files.newBufferedReader(file)) {
-            content = reader.readLine();
-        } catch (IOException e) {
-            throw new SecurityAccountOverviewReadException(e);
-        }
-        return mapOverview(content);
+        FileMapper mapper = createMapper(file);
+        return mapOverview(mapper);
     }
 
-    private SecurityAccountOverview mapOverview(String content) {
+    private FileMapper createMapper(Path file) {
+        return (new FixedWidthFileMapperBuilder(file))
+                .addField(ACCOUNTNUMBER, FieldType.String, ACCOUNTNUMBER_START_INDEX, ACCOUNTNUMBER_LENGTH, ACCOUNTNUMBER_PADDING_CHAR)
+                .addField(RISKCATEGORY, SecurityFieldType.RiskCategory, RISKCATEGORY_START_INDEX, RISKCATEGORY_LENGTH)
+                .addField(LASTNAME, FieldType.String, LASTNAME_START_INDEX, LASTNAME_LENGTH)
+                .addField(FIRSTNAME, FieldType.String, FIRSTNAME_START_INDEX, FIRSTNAME_LENGTH)
+                .addField(DEPOTOWNER, SecurityFieldType.DepotOwner(LASTNAME, FIRSTNAME))
+                .addField(CURRENCY, FieldType.String, CURRENCY_START_INDEX, CURRENCY_LENGTH)
+                .addField(BALANCE_VALUE, FieldType.BigDecimal, BALANCE_START_INDEX, BALANCE_LENGTH)
+                .addField(BALANCE, SecurityFieldType.Amount(CURRENCY, BALANCE_VALUE))
+                .build();
+    }
+
+    private SecurityAccountOverview mapOverview(FileMapper mapper) {
         SecurityAccountOverview overview = new SecurityAccountOverview();
-        overview.setAccountNumber(stripStart(
-                extract(content, ACCOUNTNUMBER_START_INDEX, ACCOUNTNUMBER_LENGTH),
-                ACCOUNTNUMBER_PADDING_CHAR));
-        overview.setRiskCategory(RiskCategory.fromCode(
-                extract(content, RISKCATEGORY_START_INDEX, RISKCATEGORY_LENGTH).trim())
-                .orElseThrow(IllegalStateException::new));
-        overview.setDepotOwner(getDepotOwner(content));
-        String currency = extract(content, CURRENCY_START_INDEX, CURRENCY_LENGTH).trim();
-        BigDecimal balanceValue = BigDecimal.valueOf(
-                Double.valueOf(extract(content, BALANCE_START_INDEX, BALANCE_LENGTH)));
-        overview.setBalance(new Amount(currency, balanceValue));
+
+        overview.setAccountNumber(mapper.getFieldValue(0));
+        overview.setRiskCategory(mapper.getFieldValue(1));
+        overview.setDepotOwner(mapper.getFieldValue(4));
+        overview.setBalance(mapper.getFieldValue(7));
+
         return overview;
     }
 
-    private DepotOwner getDepotOwner(String content) {
-        DepotOwner owner = new DepotOwner();
-        owner.setLastname(extract(content, LASTNAME_START_INDEX, LASTNAME_LENGTH).trim());
-        owner.setFirstname(extract(content, FIRSTNAME_START_INDEX, FIRSTNAME_LENGTH).trim());
-        return owner;
-    }
-
-    private String extract(String content, int startIndex, int length) {
-        return content.substring(startIndex, startIndex + length);
-    }
 
 }
