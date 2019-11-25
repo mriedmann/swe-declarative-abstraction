@@ -1,17 +1,16 @@
 package at.technikum.wien.mse.swe;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import at.technikum.wien.mse.swe.connector.SecurityConfigurationConnectorImpl;
+import at.technikum.wien.mse.swe.model.RiskCategory;
+import at.technikum.wien.mse.swe.model.SecurityConfiguration;
+import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
 
-import org.junit.Test;
-
-import at.technikum.wien.mse.swe.connector.SecurityConfigurationConnectorImpl;
-import at.technikum.wien.mse.swe.model.RiskCategory;
-import at.technikum.wien.mse.swe.model.SecurityConfiguration;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * @author MatthiasKreuzriegler
@@ -60,7 +59,7 @@ public class SecurityConfigurationConnectorTest {
         SecurityConfiguration configuration = sut.read(Paths.get(ClassLoader.getSystemResource(FILENAME).toURI()));
         assertNotNull("yearLowest not found", configuration.getYearLowest());
         assertEquals("EUR", configuration.getYearLowest().getCurrency());
-        assertEquals(BigDecimal.valueOf(29.60d), configuration.getYearLowest().getValue());
+        assertEquals(new BigDecimal("29.60"), configuration.getYearLowest().getValue());
     }
 
 }
