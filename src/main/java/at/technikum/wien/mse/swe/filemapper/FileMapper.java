@@ -1,5 +1,5 @@
 package at.technikum.wien.mse.swe.filemapper;
 
-public interface FileMapper {
-    <T> T getFieldValue(int index);
+public interface FileMapper<T> {
+    T map(T instance);
 }

@@ -1,25 +1,30 @@
 package at.technikum.wien.mse.swe.filemapper;
 
+import at.technikum.wien.mse.swe.filemapper.annotations.FieldAlignment;
+
+import static org.apache.commons.lang.StringUtils.stripEnd;
 import static org.apache.commons.lang.StringUtils.stripStart;
 
-class FixedWidthField<T> extends Field<T> {
+class FixedWidthFieldDelegate<T> extends FieldDelegate<T> {
     private final int startIndex;
     private final int length;
     private final String paddingChar;
     private final FixedWidthFile file;
+    private final FieldAlignment alignment;
 
-    FixedWidthField(FileMapper mapper, FieldConverter<T> converter, FixedWidthFile file, int startIndex, int length, String paddingChar) {
-        super(mapper, converter);
+    FixedWidthFieldDelegate(Class<T> fieldClass, String fieldName, FixedWidthFile file, int startIndex, int length, String padding, FieldAlignment alignment) {
+        super(fieldClass, fieldName);
         this.startIndex = startIndex;
         this.length = length;
-        this.paddingChar = paddingChar;
+        this.paddingChar = padding;
         this.file = file;
+        this.alignment = alignment;
     }
 
     @Override
     public T getValue() {
         String fieldContent = extract(file.getContent());
-        return this.converter.convert(fieldContent, mapper);
+        return ObjectCreator.buildObject(this.fieldClass, new Object[]{fieldContent});
     }
 
     private String extract(String content) {
@@ -27,10 +32,10 @@ class FixedWidthField<T> extends Field<T> {
             return "";
         }
         final String substring = content.substring(startIndex, startIndex + length);
-        if (paddingChar == null) {
-            return substring.trim();
-        } else {
+        if (this.alignment == FieldAlignment.LEFT) {
             return stripStart(substring, paddingChar);
+        } else {
+            return stripEnd(substring, paddingChar);
         }
     }
 }

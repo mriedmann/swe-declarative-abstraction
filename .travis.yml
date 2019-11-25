@@ -1,0 +1,14 @@
+language: java
+install: true
+os: linux
+dist: trusty
+jdk: oraclejdk8
+
+addons:
+  sonarcloud:
+    organization: "mriedmann"
+    token: ZntYbH6DMIv49jqIMbXVPp2UzeqRuyX8iBH+4LZO7VVckKT5me7/nFcfnPg6TNynU2y2jWw0yjPThQjjkiPfZxSXfFx/ycSkOPu2Y9dgzAXj4PjOaPORnKwOXe72AibspBtgoaYgb0TDW2lzFRkdn6wdAyBQBRC/3BJYP0uUh1uKD9HSkbhkIuYDtc2jdwofBwOtO6n9u3K5TpL2vPh4ksqJMJX3lR/i8mo3ISPq85S6m1v9JGUqjvq4aoAaANW5TEG9M981tK0TsEu9ZbFhLKWlz+RdjZmBFxIO7tv9S6FuVZPW7a1iN6fgs+yVNUxSe4EqRbn73j9tZEcD8rinWRyUG8D9X3gsNtWy9x5L2XBGrOv3/hW0ROi69PcRXGhgzb1Tc7DNOCSpu9E4PuUkh7scr9iYWm5TgnpBj/2+H4JMZSfMU+2+xMvnUbVvDwIG1KEYRJgANkQ/hQyCBwgny0J3JFG44CQScpHurMXblBIEHUQoRAe5jXrFT2XtBVEWYYzgt1WmS4W6fjHQLRooZsVuiAhCWlcEP88GnhyxWUxbYfOW1SOqnWq+5ksDTwWMEKEFmM+tX8wmnZJ2UrzFfpMOqBvc+YpmXJGI9nvWPEaibzy0YGH77NCkX4lslCBwW4CGUIaWK90bRxxaEhyaGBCZTK6AK6OyhgoAJ3fiDSY=
+
+script:
+    - "./gradlew build --scan -s"
+    - ./gradlew sonarqube

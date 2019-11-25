@@ -1,11 +1,14 @@
 package at.technikum.wien.mse.swe.model;
 
+import at.technikum.wien.mse.swe.filemapper.annotations.FieldConstructor;
+
 import java.util.Arrays;
 import java.util.Optional;
 
 /**
  * @author MatthiasKreuzriegler
  */
+
 public enum RiskCategory {
 
     NON_EXISTING("00"),
@@ -21,6 +24,7 @@ public enum RiskCategory {
         this.code = code;
     }
 
+    @FieldConstructor
     public static final Optional<RiskCategory> fromCode(String code){
         return Arrays.stream(values()).filter(rc -> rc.code.equalsIgnoreCase(code)).findFirst();
     }
