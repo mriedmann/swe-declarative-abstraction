@@ -1,24 +1,25 @@
 package at.technikum.wien.mse.swe.filemapper;
 
-public class FieldDelegate<T> {
-    protected final String fieldName;
-    protected final Class<T> fieldClass;
+abstract class FieldDelegate<T> {
+    final Class<T> fieldClass;
+    private final String fieldName;
+    private T value;
 
     FieldDelegate(Class<T> fieldClass, String fieldName) {
         this.fieldClass = fieldClass;
         this.fieldName = fieldName;
     }
 
-    public T getValue() {
-        return ObjectCreator.buildObject(this.fieldClass, new Object[0]);
+    T getValue(String lineContent) {
+        if (value == null) {
+            value = loadValue(lineContent);
+        }
+        return value;
     }
 
     String getName() {
         return this.fieldName;
     }
 
-    @Override
-    public String toString() {
-        return String.format("FD: %s %s", fieldClass.getCanonicalName(), fieldName);
-    }
+    abstract T loadValue(String lineContent);
 }

@@ -1,5 +1,5 @@
 package at.technikum.wien.mse.swe.filemapper;
 
-public interface FileMapperFactory {
+interface FileMapperFactory {
     <T> FileMapper<T> createMapper(Class<T> model);
 }

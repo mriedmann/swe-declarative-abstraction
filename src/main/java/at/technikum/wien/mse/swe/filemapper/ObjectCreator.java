@@ -1,7 +1,5 @@
 package at.technikum.wien.mse.swe.filemapper;
 
-import at.technikum.wien.mse.swe.filemapper.annotations.FieldConstructor;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -27,7 +25,7 @@ class ObjectCreator {
                 result = buildFromDefaultConstructor(targetClass);
             }
         } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
-            e.printStackTrace();
+            throw new RuntimeException();
         }
 
         return result;

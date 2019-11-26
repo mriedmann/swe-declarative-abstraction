@@ -1,4 +1,4 @@
-package at.technikum.wien.mse.swe.filemapper.annotations;
+package at.technikum.wien.mse.swe.filemapper;
 
 import java.lang.annotation.*;
 

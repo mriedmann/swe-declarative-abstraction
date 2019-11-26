@@ -11,16 +11,12 @@ public class FileMapperImpl<T> implements FileMapper<T> {
     }
 
     @Override
-    public T map(T instance) {
+    public T map(T instance, String lineContent) throws IllegalAccessException, NoSuchFieldException {
         for (FieldDelegate field : fields) {
             String fieldName = field.getName();
-            try {
-                Field f1 = instance.getClass().getDeclaredField(fieldName);
-                f1.setAccessible(true);
-                f1.set(instance, field.getValue());
-            } catch (NoSuchFieldException | IllegalAccessException e) {
-                e.printStackTrace();
-            }
+            Field f1 = instance.getClass().getDeclaredField(fieldName);
+            f1.setAccessible(true);
+            f1.set(instance, field.getValue(lineContent));
         }
         return instance;
     }

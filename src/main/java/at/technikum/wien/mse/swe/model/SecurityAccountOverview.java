@@ -1,8 +1,8 @@
 package at.technikum.wien.mse.swe.model;
 
-import at.technikum.wien.mse.swe.filemapper.annotations.ComponentField;
-import at.technikum.wien.mse.swe.filemapper.annotations.FieldAlignment;
-import at.technikum.wien.mse.swe.filemapper.annotations.FixedWidthField;
+import at.technikum.wien.mse.swe.filemapper.ComponentField;
+import at.technikum.wien.mse.swe.filemapper.FieldAlignment;
+import at.technikum.wien.mse.swe.filemapper.FixedWidthField;
 
 /**
  * @author MatthiasKreuzriegler

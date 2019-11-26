@@ -1,6 +1,6 @@
 package at.technikum.wien.mse.swe.model;
 
-import at.technikum.wien.mse.swe.filemapper.annotations.FieldConstructor;
+import at.technikum.wien.mse.swe.filemapper.FieldConstructor;
 
 import java.util.Arrays;
 import java.util.Optional;

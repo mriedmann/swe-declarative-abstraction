@@ -2,9 +2,8 @@ package at.technikum.wien.mse.swe.filemapper;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-public class CompositeFieldDelegate<T> extends FieldDelegate<T> {
+class CompositeFieldDelegate<T> extends FieldDelegate<T> {
     private final FileMapperImpl<T> mapper;
     private final List<FieldDelegate> components;
 
@@ -16,10 +15,17 @@ public class CompositeFieldDelegate<T> extends FieldDelegate<T> {
     }
 
     @Override
-    public T getValue() {
+    protected T loadValue(String lineContent) {
         ArrayList<Object> args = new ArrayList<>();
-        args.addAll(components.stream().map(FieldDelegate::getValue).collect(Collectors.toList()));
+        for (FieldDelegate delegate : components) {
+            args.add(delegate.getValue(lineContent));
+        }
         T instance = ObjectCreator.buildObject(this.fieldClass, args.toArray());
-        return mapper.map(instance);
+
+        try {
+            return mapper.map(instance, lineContent);
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            throw new RuntimeException();
+        }
     }
 }
